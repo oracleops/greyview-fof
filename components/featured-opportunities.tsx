@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -23,11 +23,17 @@ export function FeaturedOpportunities() {
   const router = useRouter();
   const [displayCount, setDisplayCount] = useState('10');
   const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState<any>(null);
+
+  const fetchSession = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setSession(session);
+  }, []);
 
   useEffect(() => {
     async function fetchOpportunities() {
       try {
-        const { data, error } = await supabase
+        let query = supabase
           .from('volunteer_opportunities')
           .select(`
             id,
@@ -38,8 +44,13 @@ export function FeaturedOpportunities() {
             location,
             active
           `)
-          .eq('active', true)
-          .limit(parseInt(displayCount));
+          .eq('active', true);
+
+        if (session) {
+          // Add any authenticated user specific filters here if needed
+        }
+
+        const { data, error } = await query.limit(parseInt(displayCount));
 
         if (error) {
           console.error('Error fetching opportunities:', error);
@@ -54,8 +65,9 @@ export function FeaturedOpportunities() {
       }
     }
 
+    fetchSession();
     fetchOpportunities();
-  }, [displayCount]);
+  }, [displayCount, session, fetchSession]);
 
   return (
     <section className="w-full max-w-6xl mx-auto py-12">
