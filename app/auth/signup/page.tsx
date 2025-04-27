@@ -27,7 +27,6 @@ export default function SignUp() {
     const password = formData.get('password') as string;
     const first_name = formData.get('firstName') as string;
     const last_name = formData.get('lastName') as string;
-    const display_name = `${first_name} ${last_name}`;
 
     try {
       // Sign up the user
@@ -36,7 +35,7 @@ export default function SignUp() {
         password,
         options: {
           data: {
-            display_name
+            name: `${first_name} ${last_name}`
           },
         },
       });
@@ -65,6 +64,7 @@ export default function SignUp() {
               first_name,
               last_name,
               email: email,
+              display_name: `${first_name} ${last_name}`
             },
           ]);
 
