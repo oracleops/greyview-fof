@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 interface SignupDialogProps {
   open: boolean;
